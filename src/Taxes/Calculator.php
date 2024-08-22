@@ -21,3 +21,22 @@ class Calculator
         return $prix * (20 / 100);
     }
 }
+
+class Detector
+{
+    protected $prixfix;
+
+    public function __construct(float $prixfix)
+    {
+        $this->prixfix = $prixfix;
+    }
+
+    public function detect(float $prix): bool
+    {
+        if ($prix > $this->prixfix) {
+            return True;
+        } else {
+            return false;
+        }
+    }
+}
