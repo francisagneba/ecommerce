@@ -10,6 +10,10 @@ services:
     App\Controller\HelloController:
         tags: ['controller.service_arguments']
 
+    # Rendre le HomeController accessible et injecter ses dépendances
+    App\Controller\HomeController:
+        tags: ['controller.service_arguments']
+
     # Si ce n'est pas déjà autowiré, on pourrait explicitement enregistrer le service Calculator (facultatif)
     App\Taxes\Calculator:
         arguments:
