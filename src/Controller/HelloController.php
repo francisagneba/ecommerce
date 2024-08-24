@@ -16,22 +16,18 @@ class HelloController
     /**
      * @Route("/hello/{prenom?Word}", name="hello")
      */
-    public function hello(string $prenom, LoggerInterface $logger, Calculator $calculator, Slugify $slugify, Environment $twig, Detector $detector): Response
+    public function hello(string $prenom, Environment $twig): Response
     {
-        dump($detector->detect(101));
-        dump($detector->detect(10));
+        $html = $twig->render('hello.html.twig', [
+            'prenom' => $prenom,
+            'ages' => [
+                12,
+                18,
+                29,
+                15
+            ]
 
-        dump($twig);
-
-        dump($slugify->slugify("Hello World"));
-
-        $logger->error("Mon message de log !");
-
-        $tva = $calculator->calcul(100);
-
-        // Pour déboguer
-        dump($tva); // Utiliser dump() pour voir le résultat dans la barre de débogage
-
-        return new Response("Hello $prenom, TVA: $tva");
+        ]);
+        return new Response($html);
     }
 }
