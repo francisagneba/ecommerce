@@ -14,6 +14,9 @@ services:
     App\Controller\HomeController:
         tags: ['controller.service_arguments']
 
+    App\Repository\ProductRepository:
+        tags: ['controller.service_arguments']
+
     # Si ce n'est pas déjà autowiré, on pourrait explicitement enregistrer le service Calculator (facultatif)
     App\Taxes\Calculator:
         arguments:
@@ -24,3 +27,8 @@ services:
     App\Taxes\Detector:
         arguments:
            $prixfix: 100
+
+    # Fixtures
+    App\DataFixtures\AppFixtures:
+        tags: ['doctrine.fixture.orm']
+        public: true
