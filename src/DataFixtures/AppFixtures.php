@@ -24,7 +24,7 @@ class AppFixtures extends Fixture
         $faker->addProvider(new \Liior\Faker\Prices($faker));
         $faker->addProvider(new \Bluemmb\Faker\PicsumPhotosProvider($faker));
 
-        for ($c = 0; $c < 3; $c++) {
+        for ($c = 0; $c < 6; $c++) {
             $category = new Category();
             $categoryName = ucfirst(implode(' ', $faker->words(2))); // Génère un nom de categorie en combinant 3 mots
             $category->setName($categoryName)

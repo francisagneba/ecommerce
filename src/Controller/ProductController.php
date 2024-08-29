@@ -21,6 +21,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Form\Extension\Core\Type\FormType;
 use Symfony\Component\Form\Extension\Core\Type\UrlType;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\Routing\Matcher\UrlMatcherInterface;
 use Symfony\Component\String\Slugger\SluggerInterface;
 
 class ProductController extends AbstractController
@@ -54,23 +55,61 @@ class ProductController extends AbstractController
         ]);
     }
 
+    #[Route('/admin/product/{id}/edit', name: 'product_edit')]
+    public function edit(
+        $id,
+        ProductRepository $productRepository,
+        Request $request,
+        EntityManagerInterface $em
+    ) {
+        $product = $productRepository->find($id);
+
+        $form = $this->createForm(ProductType::class, $product);
+
+        //$form->setData($product);
+
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted()) {
+            $em->flush();
+
+            return $this->redirectToRoute('product_show', [
+                'category_slug' => $product->getCategory()->getSlug(),
+                'slug' => $product->getSlug()
+            ]);
+        }
+
+        $formView = $form->createView();
+
+        return $this->render('product/edit.html.twig', [
+            'product' => $product,
+            'formView' => $formView
+        ]);
+    }
+
     #[Route('/admin/product/create', name: 'product_create')]
     public function create(
         Request $request,
         SluggerInterface $slugger,
         EntityManagerInterface $em
     ) {
-        $form = $this->createForm(ProductType::class);
+        $product = new Product;
+
+        $form = $this->createForm(ProductType::class, $product);
 
         $form->handleRequest($request);
 
         if ($form->isSubmitted()) {
-            $product = $form->getData();
+
             $product->setSlug(strtolower($slugger->slug($product->getName())));
 
             $em->persist($product);
             $em->flush();
-            dd($product);
+
+            return $this->redirectToRoute('product_show', [
+                'category_slug' => $product->getCategory()->getSlug(),
+                'slug' => $product->getSlug()
+            ]);
         }
 
         $formView = $form->createView();

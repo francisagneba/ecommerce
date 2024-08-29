@@ -24,6 +24,9 @@ services:
     App\Controller\ProductController:
         tags: ['controller.service_arguments']
 
+    App\Controller\CategoryController:
+        tags: ['controller.service_arguments']
+
 
     # Si ce n'est pas déjà autowiré, on pourrait explicitement enregistrer le service Calculator (facultatif)
     App\Taxes\Calculator:
