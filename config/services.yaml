@@ -27,6 +27,10 @@ services:
     App\Controller\CategoryController:
         tags: ['controller.service_arguments']
 
+    App\Form\DataTransformer\CentimesTransformer:
+        arguments: []
+
+
 
     # Si ce n'est pas déjà autowiré, on pourrait explicitement enregistrer le service Calculator (facultatif)
     App\Taxes\Calculator:
