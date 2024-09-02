@@ -23,6 +23,7 @@ use Symfony\Component\Form\Extension\Core\Type\UrlType;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Matcher\UrlMatcherInterface;
 use Symfony\Component\String\Slugger\SluggerInterface;
+use Symfony\Component\Validator\Validator\ValidatorInterface;
 
 class ProductController extends AbstractController
 {
@@ -60,8 +61,10 @@ class ProductController extends AbstractController
         $id,
         ProductRepository $productRepository,
         Request $request,
-        EntityManagerInterface $em
+        EntityManagerInterface $em,
+        ValidatorInterface $validator
     ) {
+
         $product = $productRepository->find($id);
 
         $form = $this->createForm(ProductType::class, $product);
@@ -70,7 +73,7 @@ class ProductController extends AbstractController
 
         $form->handleRequest($request);
 
-        if ($form->isSubmitted()) {
+        if ($form->isSubmitted() && $form->isValid()) {
 
             // dd($form->getData());
             $em->flush();

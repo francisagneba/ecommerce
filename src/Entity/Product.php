@@ -5,6 +5,8 @@ namespace App\Entity;
 use App\Repository\ProductRepository;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
+use Symfony\Component\Validator\Mapping\ClassMetadata;
 
 #[ORM\Entity(repositoryClass: ProductRepository::class)]
 class Product
@@ -15,9 +17,17 @@ class Product
     private ?int $id = null;
 
     #[ORM\Column(length: 255)]
+    #[Assert\NotBlank(message: "Le nom du produit est obligatoire")]
+    #[Assert\Length(
+        min: 3,
+        max: 255,
+        minMessage: "Le nom du produit doit contenir au moins 3 caractères",
+        maxMessage: "Le nom du produit ne peut pas dépasser 255 caractères"
+    )]
     private ?string $name = null;
 
     #[ORM\Column]
+    #[Assert\NotBlank(message: "Le prix du produit est obligatoire")]
     private ?int $price = null;
 
     #[ORM\Column(length: 255)]
@@ -27,10 +37,26 @@ class Product
     private ?Category $category = null;
 
     #[ORM\Column(length: 255)]
+    #[Assert\Url(message: "La photo principale doit être une URL valide")]
+    #[Assert\NotBlank(message: "La photo principale est obligatoire est obligatoire")]
     private ?string $mainPicture = null;
 
     #[ORM\Column(type: Types::TEXT)]
+    #[Assert\NotBlank(message: "La courte descrisption est obligatoire")]
+    #[Assert\Length(
+        min: 20,
+        maxMessage: "La courte description doit faire au moins 20 caractères"
+    )]
     private ?string $shortDescription = null;
+
+    // public static function loadValidatorMetadata(ClassMetadata $metadata)
+    // {
+    //     $metadata->addPropertyConstraints('name', [
+    //         new Assert\NotBlank(['message' => 'Le nom du produit est obligatoire']),
+    //         new Assert\Length(['min' => 3, 'max' => 255, 'minMessage' => 'Le nom du produit doit contenir au moins 3 caractères'])
+    //     ]);
+    //     $metadata->addGetterConstraint('price', new Assert\NotBlank(['message' => 'Le prix du produit est obligatoire']));
+    // }
 
     public function getId(): ?int
     {
@@ -42,7 +68,7 @@ class Product
         return $this->name;
     }
 
-    public function setName(string $name): static
+    public function setName(?string $name): static
     {
         $this->name = $name;
 
@@ -54,7 +80,7 @@ class Product
         return $this->price;
     }
 
-    public function setPrice(int $price): static
+    public function setPrice(?int $price): static
     {
         $this->price = $price;
 
@@ -90,7 +116,7 @@ class Product
         return $this->mainPicture;
     }
 
-    public function setMainPicture(string $mainPicture): static
+    public function setMainPicture(?string $mainPicture): static
     {
         $this->mainPicture = $mainPicture;
 
@@ -102,7 +128,7 @@ class Product
         return $this->shortDescription;
     }
 
-    public function setShortDescription(string $shortDescription): static
+    public function setShortDescription(?string $shortDescription): static
     {
         $this->shortDescription = $shortDescription;
 
