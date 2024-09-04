@@ -47,3 +47,20 @@ services:
     App\DataFixtures\AppFixtures:
         tags: ['doctrine.fixture.orm']
         public: true
+
+    # Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface:
+    #     alias: Symfony\Component\PasswordHasher\Hasher\PasswordHasherInterface
+
+    Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface:
+        alias: 'security.password_hasher'
+
+    # Makes classes in src/ available to be used as services
+    App\:
+        resource: '../src/*'
+        exclude: '../src/{DependencyInjection,Entity,Tests,Kernel.php}'
+
+    App\Security\:
+        resource: '../src/Security'
+
+    App\Security\LoginFormAuthenticator:
+        tags: ['controller.service_arguments']

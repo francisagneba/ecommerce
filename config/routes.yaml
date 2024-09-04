@@ -1,3 +1,8 @@
-#index:
-#    path: /
-#    controller: App\Controller\DefaultController::index
+
+app_login:
+    path: /login
+    controller: App\Controller\SecurityController::login
+
+product_category:
+    path: /{slug}
+    controller: App\Controller\AppController::categoryBySlug
