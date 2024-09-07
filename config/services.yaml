@@ -27,6 +27,9 @@ services:
     App\Controller\CategoryController:
         tags: ['controller.service_arguments']
 
+    App\Controller\CartController:
+        tags: ['controller.service_arguments']
+
     App\Form\DataTransformer\CentimesTransformer:
         arguments: []
 
@@ -64,3 +67,4 @@ services:
 
     App\Security\LoginFormAuthenticator:
         tags: ['controller.service_arguments']
+

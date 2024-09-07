@@ -35,6 +35,21 @@ class CategoryController extends AbstractController
         ]);
     }
 
+    #[Route('/{slug}', name: 'category_show')]
+    public function show($slug, CategoryRepository $categoryRepository): Response
+    {
+        $category = $categoryRepository->findOneBy(['slug' => $slug]);
+        //dd($category);
+        if (!$category) {
+            throw $this->createNotFoundException("La catégorie démendée n'existe pas");
+        }
+
+        return $this->render('product/category.html.twig', [
+            'slug' => $slug,
+            'category' => $category
+        ]);
+    }
+
 
     #[Route('/admin/category/{id}/edit', name: 'category_edit')]
     // #[IsGranted('ROLE_ADMIN', message: "Vous n'avez pas le droit d'acceder à cette  resource.")]
