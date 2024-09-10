@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use App\Cart\CartService;
 use App\Repository\ProductRepository;
 use App\Repository\CategoryRepository;
 use SessionIdInterface;
@@ -18,7 +19,7 @@ class CartController extends AbstractController
 
 
     #[Route('/cart/add/{id}', name: 'cart_add', requirements: ['id' => '\d+'])]
-    public function add($id, ProductRepository $productRepository, SessionInterface $session, FlashBagInterface $flashBag): Response
+    public function add($id, ProductRepository $productRepository, CartService $cartService, FlashBagInterface $flashBag, Request $request): Response
     {
         //0. Securisation : Est ce que ce produit existe ?
 
@@ -27,24 +28,14 @@ class CartController extends AbstractController
         if (!$product) {
             throw $this->createNotFoundException("Le produit $id n'existe pas !");
         }
-        //1. Retrouver le panier dans la session (sous forme de tableau)
-        //2. S'il n'existe pas encore ,alors prendre un tableau vide
-        $cart = $session->get('cart', []);
 
-        //3. Voir si le produit ($id) existe déjà dans le tableau
-        //4. Si c'est le cas , simplement augmenter la quantité
-        //5. Sinon ajouter le produit avec la quantité 1
-
-        if (array_key_exists($id, $cart)) {
-            $cart[$id]++;
-        } else {
-            $cart[$id] = 1;
-        }
-
-        //6. Enregistrer le tableau mis à jour dans la session
-        $session->set('cart', $cart);
+        $cartService->add($id);
 
         $this->addFlash('success', "Le produit a bien été ajouté au panier");
+
+        if ($request->query->get('returnToCart')) {
+            return $this->redirectToRoute("cart_show");
+        }
 
         //$flashBag->add('success', "Le produit a bien été ajouté au panier");
 
@@ -62,26 +53,51 @@ class CartController extends AbstractController
 
 
     #[Route('/cart', name: 'cart_show')]
-    public function show(SessionInterface $session, ProductRepository $productRepository)
+    public function show(CartService $cartService)
     {
-        $detailedCart = [];
-        $total = 0;
 
-        foreach ($session->get('cart', []) as $id => $qty) {
+        $detailedCart = $cartService->getDetailedCartItems();
 
-            $product = $productRepository->find($id);
-
-            $detailedCart[] = [
-                'product' => $product,
-                'qty' => $qty
-            ];
-
-            $total += ($product->getPrice() * $qty);
-        }
+        $total = $cartService->getTotal();
 
         return $this->render('cart/index.html.twig', [
             'items' => $detailedCart,
             'total' => $total
         ]);
+    }
+
+    #[Route('/cart/delete/{id}', name: 'cart_delete', requirements: ['id' => '\d+'])]
+
+    public function delete($id, ProductRepository $productRepository, CartService $cartService)
+    {
+
+        $product = $productRepository->find($id);
+
+        if (!$product) {
+            throw $this->createNotFoundException("Le produit $id n'existe pas et ne peut pas être supprimé !");
+        }
+
+        $cartService->remove($id);
+
+        $this->addFlash('success', "Le produit a bien été supprimé au panier");
+
+        return $this->redirectToRoute("cart_show");
+    }
+
+
+    #[Route('/cart/decrement/{id}', name: 'cart_decrement', requirements: ['id' => '\d+'])]
+    public function decrement($id, CartService $cartService, ProductRepository $productRepository)
+    {
+        $product = $productRepository->find($id);
+
+        if (!$product) {
+            throw $this->createNotFoundException("Le produit $id n'existe pas et ne peut pas être décrémenté !");
+        }
+
+        $cartService->decrement($id);
+
+        $this->addFlash('success', "Le produit a bien été décrémenté au panier");
+
+        return $this->redirectToRoute("cart_show");
     }
 }
