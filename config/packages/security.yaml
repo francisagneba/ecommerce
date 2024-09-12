@@ -1,5 +1,4 @@
 security:
-
     enable_authenticator_manager: true
 
     password_hashers:
@@ -19,13 +18,17 @@ security:
             security: false
 
         main:
-            # anonymous: true   # <- Ceci doit être modifié si nécessaire
-            lazy: true
+            pattern: ^/
+            form_login:
+                login_path: app_login
+                check_path: app_login
+                default_target_path: homepage
+            entry_point: form_login  # Définit form_login comme point d'entrée
             custom_authenticators:
                 - App\Security\LoginFormAuthenticator
             logout:
                 path: app_logout
-                target: app_login
+                target: homepage
             remember_me:
                 secret: '%kernel.secret%'
                 lifetime: 604800
@@ -34,6 +37,7 @@ security:
             access_denied_url: /login
 
     access_control:
-        #- { path: ^/admin, roles: ROLE_ADMIN }
-        #- { path: ^/login$, roles: IS_AUTHENTICATED_ANONYMOUSLY }
-        #- { path: ^/profile, roles: ROLE_USER }
+        - { path: ^/admin, roles: ROLE_ADMIN }
+        - { path: ^/profile, roles: ROLE_USER }
+        - { path: ^/login, roles: IS_AUTHENTICATED_ANONYMOUSLY }
+        - { path: ^/purchases, roles: IS_AUTHENTICATED_ANONYMOUSLY }

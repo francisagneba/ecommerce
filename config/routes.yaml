@@ -3,6 +3,12 @@ app_login:
     path: /login
     controller: App\Controller\SecurityController::login
 
-product_category:
+purchase_index:
+    path: /purchases
+    controller: App\Controller\Purchase\PurchasesListController::index
+
+category_show:
     path: /{slug}
-    controller: App\Controller\AppController::categoryBySlug
+    controller: App\Controller\CategoryController::show
+    requirements:
+        slug: "[^/]+"

@@ -12,7 +12,7 @@
 			<a href="{{ path('homepage')}}">Accueil</a>
 		</li>
 		<li class="breadcrumb-item">
-			<a href="{{ path('product_category', {'slug': product.category.slug})}}">{{ product.category.name }}</a>
+			<a href="{{ path('category_show', {'slug': product.category.slug})}}">{{ product.category.name }}</a>
 		</li>
 		<li class="breadcrumb-item active">{{ product.name }}</li>
 	</ol>

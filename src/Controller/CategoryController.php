@@ -41,7 +41,7 @@ class CategoryController extends AbstractController
         $category = $categoryRepository->findOneBy(['slug' => $slug]);
         //dd($category);
         if (!$category) {
-            throw $this->createNotFoundException("La catégorie démendée n'existe pas");
+            throw $this->createNotFoundException("La catégorie demandée n'existe pas");
         }
 
         return $this->render('product/category.html.twig', [

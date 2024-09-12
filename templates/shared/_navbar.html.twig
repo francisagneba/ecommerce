@@ -20,6 +20,10 @@
 					</a>
 				</li>
 				{% if app.user %}
+					{# Si je suis connecté#}
+					<li class="nav_item">
+						<a href="{{ path('purchase_index')}}" class="nav-link">Mes commandes</a>
+					</li>
 					<li class="nav-item">
 						<a href="{{ path('app_logout')}}" class="btn btn-danger">Logout</a>
 					</li>
