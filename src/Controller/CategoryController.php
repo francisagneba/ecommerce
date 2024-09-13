@@ -36,6 +36,7 @@ class CategoryController extends AbstractController
     }
 
     #[Route('/{slug}', name: 'category_show')]
+
     public function show($slug, CategoryRepository $categoryRepository): Response
     {
         $category = $categoryRepository->findOneBy(['slug' => $slug]);

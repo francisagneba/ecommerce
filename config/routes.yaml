@@ -7,6 +7,10 @@ purchase_index:
     path: /purchases
     controller: App\Controller\Purchase\PurchasesListController::index
 
+# purchase_confirm:
+#     path: /purchase/confirm
+#     controller: App\Controller\Purchase\PurchasesListController::confirm
+
 category_show:
     path: /{slug}
     controller: App\Controller\CategoryController::show
