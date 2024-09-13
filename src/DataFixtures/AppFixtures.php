@@ -7,6 +7,7 @@ use App\Entity\User;
 use App\Entity\Product;
 use App\Entity\Category;
 use App\Entity\Purchase;
+use App\Entity\PurchaseItem;
 use Doctrine\Persistence\ObjectManager;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Symfony\Component\String\Slugger\SluggerInterface;
@@ -54,6 +55,8 @@ class AppFixtures extends Fixture
             $manager->persist($user);
         }
 
+        $products = [];
+
         for ($c = 0; $c < 6; $c++) {
             $category = new Category();
             $categoryName = ucfirst(implode(' ', $faker->words(2)));
@@ -72,6 +75,8 @@ class AppFixtures extends Fixture
                     ->setShortDescription($faker->paragraph())
                     ->setMainPicture($faker->imageUrl(400, 400, true));
 
+                $products[] = $product;
+
                 $manager->persist($product);
             }
         }
@@ -86,6 +91,23 @@ class AppFixtures extends Fixture
                 ->setUser($faker->randomElement($users))
                 ->setTotal(mt_rand(2000, 30000))
                 ->setPurchasedAt(\DateTimeImmutable::createFromMutable($faker->dateTimeBetween('-6 months', 'now')));
+
+
+            $selectedProducts = $faker->randomElements($products, mt_rand(3, 5));
+
+            foreach ($selectedProducts as $product) {
+                $purchaseItem = new PurchaseItem;
+                $purchaseItem->setProduct($product)
+                    ->setQuantity(mt_rand(1, 3))
+                    ->setProductName($product->getName())
+                    ->setProductPrice($product->getPrice())
+                    ->setTotal(
+                        $purchaseItem->getProductPrice() * $purchaseItem->getQuantity()
+                    )
+                    ->setPurchase($purchase);
+
+                $manager->persist($purchaseItem);
+            }
 
 
 
