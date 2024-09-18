@@ -79,7 +79,7 @@ class PurchaseConfirmationController extends AbstractController
         }
 
         //5. Nous allons créer une purchase
-        /**@var Purchase */
+        /** @var Purchase */
         $purchase = $form->getData();
 
         //6. nous allons la lier avec l'utilisateur actuellemnt connecté (securité)
@@ -89,10 +89,12 @@ class PurchaseConfirmationController extends AbstractController
 
         //9. Après l'enregistrement de notre commande dans la BD on va demander
         //à notre panier de se vider
-        $this->cartService->empty();
+        //$this->cartService->empty();
 
-        $this->addFlash('success', 'La commande a bien été enregistrée');
+        //$this->addFlash('success', 'La commande a bien été enregistrée');
         //return new RedirectResponse($this->router->generate('purchase_index'));
-        return $this->redirectToRoute('purchase_index');
+        return $this->redirectToRoute('purchase_payment_form', [
+            'id' => $purchase->getId()
+        ]);
     }
 }
