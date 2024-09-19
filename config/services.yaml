@@ -81,3 +81,7 @@ services:
                 method: addPrenomToAttributes
               },
             ]
+
+    App\EventDispatcher\ProductViewEmailSubscriber:
+        tags:
+            - { name: 'kernel.event_subscriber' }
