@@ -4,10 +4,12 @@ namespace App\Controller\Purchase;
 
 use App\Cart\CartService;
 use App\Entity\Purchase;
+use App\Event\PurchaseSuccessEvent;
 use App\Repository\PurchaseRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 
 class PurchasePaymentSuccessController extends AbstractController
 {
@@ -17,7 +19,8 @@ class PurchasePaymentSuccessController extends AbstractController
         $id,
         PurchaseRepository $purchaseRepository,
         EntityManagerInterface $em,
-        CartService $cartService
+        CartService $cartService,
+        EventDispatcherInterface $dispatcher
     ) {
         if (!$this->isGranted('ROLE_USER')) {
             throw $this->createAccessDeniedException('Vous devez être connecté pour accéder à vos commandes.');
@@ -42,6 +45,10 @@ class PurchasePaymentSuccessController extends AbstractController
 
         //3. Je vide le panier
         $cartService->empty();
+
+        // lancer un évènement qui permette aux autres développeurs de réagir à la prise d'une commande
+        $purchaseEvent = new PurchaseSuccessEvent($purchase);
+        $dispatcher->dispatch($purchaseEvent, 'purchase.success');
 
         //4. Je redirige evec un flash vers la liste des commandes
         $this->addFlash('success', "La commande a été payée et confirmée !");
