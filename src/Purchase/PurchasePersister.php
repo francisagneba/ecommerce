@@ -26,9 +26,8 @@ class PurchasePersister
         //Intégrer tout ce qu'il faut et persister la purchase ( la commande )
 
         //6. nous allons la lier avec l'utilisateur actuellemnt connecté (securité)
-        $purchase->setUser($this->security->getUser())
-            ->setPurchasedAt(new DateTimeImmutable())
-            ->setTotal($this->cartService->getTotal());
+        $purchase->setUser($this->security->getUser());
+        // ->setTotal($this->cartService->getTotal());
 
         $this->em->persist($purchase);
 
